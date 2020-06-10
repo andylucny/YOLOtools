@@ -1,0 +1,2 @@
+www.agentspace.org/yolo/1586356900.avi
+www.agentspace.org/yolo/darknet-yolov3_last.weights
