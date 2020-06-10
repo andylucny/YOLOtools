@@ -10,9 +10,9 @@ def postprocessing(outs,shape):
     frameWidth = shape[1]
     # Scan through all the bounding boxes output from the network and keep only the
     # ones with high confidence scores. Assign the box's class label as the class with the highest score.
-    classIds = np.array([])
-    confidences = np.array([])
-    boxes = np.array([])
+    classIds = np.zeros((0,1),np.int)
+    confidences = np.zeros((0,1),np.float)
+    boxes = np.zeros((0,4),np.int)
     for out in outs:
         for detection in out:
             scores = detection[5:]
@@ -25,24 +25,24 @@ def postprocessing(outs,shape):
                 height = int(detection[3] * frameHeight)
                 left = int(center_x - width / 2)
                 top = int(center_y - height / 2)
-                np.append(classIds,classId)
-                np.append(confidences,float(confidence))
-                np.append(boxes,np.array([left, top, width, height]))
+                classIds = np.append(classIds,classId)
+                confidences = np.append(confidences,float(confidence))
+                boxes = np.append(boxes,[[left,top,width,height]],axis=0)
 
     # Perform non maximum suppression to eliminate redundant overlapping boxes with
     # lower confidences.
     if len(boxes) == 0:
-        indices = np.array([])
+        indices = np.array([],np.int)
     elif len(boxes) == 1:
-        indices = np.array([[0]], np.int32)
+        indices = np.array([[0]], np.int)
     else:
         indices = cv2.dnn.NMSBoxes(boxes, confidences, confThreshold, nmsThreshold)
     final_classids = np.array([])
-    final_boxes = np.array([])
+    final_boxes = np.zeros((0,4),np.int)
     for i in indices:
-        np.append(final_classids,classIds[i[0]])
-        np.append(final_boxes,boxes[i[0]])
-    
+        final_classids = np.append(final_classids,classIds[i[0]])
+        final_boxes = np.append(final_boxes,[boxes[i[0]]],axis=0)
+
     return final_classids, final_boxes
 
 # Initialize the parameters
@@ -94,7 +94,9 @@ while True:
     classids, boxes = postprocessing(outs,frame.shape)
     
     result = np.copy(frame)
-    for classid, box in zip(classids,boxes):
+    for i in range(boxes.shape[0]):
+        classid = classids[i]
+        box = boxes[i]
         left = box[0]
         top = box[1]
         width = box[2]
@@ -107,8 +109,11 @@ while True:
     cv2.putText(result, str(tt), (16, 64), 0, 1.0, (0, 0, 255), 2)
     cv2.putText(result, str(last_fps), (16, 96), 0, 1.0, (0, 255, 0), 2)
     cv2.imshow('camera',result)
-    if cv2.waitKey(1) == 27:
+    key = cv2.waitKey(1)
+    if key == 27:
         break
+    elif key == ord('s'):
+        cv2.imwrite('recorded-numba.png',result)
 
     sec = int(time.time())
     if sec == last_sec:
