@@ -56,10 +56,14 @@ while True:
     confidences = []
     boxes = []
     for out in outs:
-        for detection in out:
-            scores = detection[5:]
-            classId = np.argmax(scores)
-            confidence = scores[classId]
+        scores_list = out[:,5:]
+        classIds = np.argmax(scores_list,1)
+        scores = scores_list[classIds]
+        indices = np.argwhere(scores > confThreshold)
+        for index in indices:
+            detection = out[index]
+            classId = classIds[index]
+            confidence = score[classId]
             if confidence > confThreshold:
                 center_x = int(detection[0] * frameWidth)
                 center_y = int(detection[1] * frameHeight)
