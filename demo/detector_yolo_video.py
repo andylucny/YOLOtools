@@ -13,6 +13,7 @@ modelConfiguration = "darknet-yolov3.cfg"
 modelWeights = "darknet-yolov3_last.weights"
 
 # load model
+print('loading model, please wait')
 net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
 #net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
 #net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU) # 1-2 fps
@@ -57,13 +58,13 @@ while True:
     boxes = []
     for out in outs:
         scores_list = out[:,5:]
-        classIds = np.argmax(scores_list,1)
-        scores = scores_list[classIds]
-        indices = np.argwhere(scores > confThreshold)
+        class_list = np.argmax(scores_list,axis=1)
+        scores = np.max(scores_list,axis=1)
+        indices = np.argwhere(scores > confThreshold).reshape(-1)
         for index in indices:
             detection = out[index]
-            classId = classIds[index]
-            confidence = score[classId]
+            classId = class_list[index]
+            confidence = scores[index]
             if confidence > confThreshold:
                 center_x = int(detection[0] * frameWidth)
                 center_y = int(detection[1] * frameHeight)
