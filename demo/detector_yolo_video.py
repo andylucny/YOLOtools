@@ -15,11 +15,19 @@ modelWeights = "darknet-yolov3_last.weights"
 # load model
 print('loading model, please wait')
 net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
+
 #net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
 #net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU) # 1-2 fps
+
+## define OPENCV_OCL4DNN_CONFIG_PATH as e.g. .opencl
+## ignore -cl-no-subgroup-ifp error
+#net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
+#net.setPreferableTarget(cv2.dnn.DNN_TARGET_OPENCL) # 1-2 fps
+
 net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
-net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA) # 4 fps
+net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA) # 20 fps
 #net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA_FP16) # supported only by the newest GPU
+
 print('model loaded')
 
 # label of the followed object
