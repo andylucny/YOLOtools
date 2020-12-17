@@ -2,6 +2,9 @@
 
 download from http://www.agentspace.org/download/YOLOtools-1.0.0.zip
 
+or a bigger package including darknet for windows and example pictures and videos
+http://www.agentspace.org/download/darknet.zip
+
 unpack and launch record.bat, make order in annotator\data (remove samples and transfer there your images)
 and launch annotate.bat
 
