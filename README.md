@@ -1,6 +1,7 @@
 # YOLO tools 
 
 download from http://www.agentspace.org/download/YOLOtools-1.0.0.zip
+(and update from http://www.agentspace.org/download/YOLOtools-1.1.0.update.zip)
 
 or a bigger package including darknet for windows and example pictures and videos
 http://www.agentspace.org/download/darknet.zip
