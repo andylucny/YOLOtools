@@ -87,17 +87,17 @@ while True:
     # Perform non maximum suppression to eliminate redundant overlapping boxes with
     # lower confidences.
     if len(boxes) == 1:
-        indices = np.array([0], np.int32)
+        indices = np.array([[0]], np.int32)
     else:
         indices = cv2.dnn.NMSBoxes(boxes, confidences, confThreshold, nmsThreshold)
     result = np.copy(frame)
     for i in indices:
-        box = boxes[i]
+        box = boxes[i[0]]
         left = box[0]
         top = box[1]
         width = box[2]
         height = box[3]
-        if classIds[i] == label:
+        if classIds[i[0]] == label:
             cv2.rectangle(result, (left, top), (left+width, top+height), (0,0,255), 2)
     
     tt = time.time() - tt0
